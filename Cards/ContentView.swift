@@ -8,30 +8,37 @@
 import SwiftUI
 
 struct ContentView: View {
-    var text: String = "Hello, World!"
+    @State private var cards: [Card] = [
+         Card(front: "What is 7+7?", back: "14")
+     ]
+    @State var isShowingCreateCardView = false
+     
     var body: some View {
         ZStack {
-            Text(text)
-                .font(.system(size: 24))
-                .bold()
-                .multilineTextAlignment(.leading)
-            Image(systemName: "arrow.left.arrow.right.circle.fill")
-                .font(.system(size: 36))
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            CardDeckView(cards: cards)
+            Button {
+                isShowingCreateCardView = true
+            } label: {
+                Image(systemName: "plus")
+                    .font(.headline)
+                    .padding()
+                    .fontWeight(.heavy)
+                    .background(Color.orange)
+                    .foregroundColor(Color("flipColor"))
+                    .clipShape(.circle)
+            }
+            .padding([.top, .trailing])
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            
         }
-        .padding()
-        .frame(width: 300, height: 225)
-        .background(Color.orange)
-        .clipShape(.rect(cornerRadius: 10))
-        .shadow(radius: 10, x: 0, y: 10)
-        .padding()
-
+        .sheet(isPresented: $isShowingCreateCardView) {
+            CreateCardView { newCard in
+                cards.append(newCard)
+            }
+        }
     }
 }
 
 #Preview {
-    ContentView(text: "What is 7+7?")
-}
-#Preview {
-    ContentView(text: "What is the airspeed velocity of an unladen swallow?")
+    ContentView()
 }
